@@ -35,6 +35,7 @@ Pick Left/Right On The Bar
 ## 💬 Feedback
 Feel free to submit issues or suggestions. If you make a video, please credit the macro and include https://youtube.com/@vadeyourgh?si=Z0q90IYBwcmg6wDO
 dm my discord for bug report :Vadeyourgh
+suggest any game for macro
 
 ---
 
