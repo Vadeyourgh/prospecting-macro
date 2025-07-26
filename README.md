@@ -29,6 +29,8 @@
 
 <img width="707" height="442" alt="RobloxScreenShot20250725_165626615" src="https://github.com/user-attachments/assets/d36a4017-5d16-485f-8597-db89173e254c" />
 
+Pick Left/Right On The Bar
+
 
 ## 💬 Feedback
 Feel free to submit issues or suggestions. If you make a video, please credit the macro and include the YouTube channel if available.
