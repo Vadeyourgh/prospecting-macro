@@ -22,11 +22,13 @@
 - GUI buttons for selecting area and auto-sell zones
 
 ## 📷 Preview
-> *(Insert screenshot here if you want)*
+<img width="1734" height="1083" alt="Screenshot (35)" src="https://github.com/user-attachments/assets/0f1eecbc-5a0f-4b9b-8c47-072223287ca9" />
+<img width="1675" height="1047" alt="Screenshot (34)" src="https://github.com/user-attachments/assets/952bd645-1854-4f34-90c0-45441f30cb41" />
+
 
 ## 💬 Feedback
 Feel free to submit issues or suggestions. If you make a video, please credit the macro and include the YouTube channel if available.
 
 ---
 
-© 2025 YourName
+© 2025 Vadeyourgh
