@@ -7,12 +7,12 @@ global isMacroRunning := false
 global isPaused := false
 global macroStatus := "Inactive ❌"
 global guiVisible := true
-global settingsFile := "config.ini"
+global configFile := "config.ini"
 
 ; Default values
-global digHoldMs := 700
-global walkMs := 2000
-global backwardDelayMs := 1000
+global diggingTime := 700
+global walkTime := 1000
+global backwardDelay := 2000
 global barLX := 0
 global barLY := 0
 global barRX := 0
@@ -35,75 +35,77 @@ ShowTempToolTip(message, duration := 1000) {
     SetTimer(() => ToolTip(), -duration)
 }
 
-LoadSettings() {
-    global settingsFile, digHoldMs, walkMs, backwardDelayMs, barLX, barLY, barRX, barRY
-    global inventoryKey, autoSellEnabled, autoSellX, autoSellY, autoSellInterval, lastSellTime
+LoadConfig() {
+    global configFile, diggingTime, walkTime, backwardDelay, barLX, barLY, barRX, barRY
+    global inventoryKey, autoSellEnabled, autoSellX, autoSellY, autoSellInterval
     
-    if FileExist(settingsFile) {
-        digHoldMs := IniRead(settingsFile, "Settings", "digHoldMs", digHoldMs)
-        walkMs := IniRead(settingsFile, "Settings", "walkMs", walkMs)
-        backwardDelayMs := IniRead(settingsFile, "Settings", "backwardDelayMs", backwardDelayMs)
-        barLX := IniRead(settingsFile, "Bar", "barLX", barLX)
-        barLY := IniRead(settingsFile, "Bar", "barLY", barLY)
-        barRX := IniRead(settingsFile, "Bar", "barRX", barRX)
-        barRY := IniRead(settingsFile, "Bar", "barRY", barRY)
-        inventoryKey := IniRead(settingsFile, "AutoSell", "inventoryKey", inventoryKey)
-        autoSellEnabled := IniRead(settingsFile, "AutoSell", "enabled", autoSellEnabled)
-        autoSellX := IniRead(settingsFile, "AutoSell", "autoSellX", autoSellX)
-        autoSellY := IniRead(settingsFile, "AutoSell", "autoSellY", autoSellY)
-        autoSellInterval := IniRead(settingsFile, "AutoSell", "interval", autoSellInterval)
+    if !FileExist(configFile) {
+        MsgBox "File config.ini tidak ditemukan. Menggunakan nilai default."
+        return
+    }
+
+    try {
+        diggingTime := IniRead(configFile, "Settings", "diggingTime", diggingTime)
+        walkTime := IniRead(configFile, "Settings", "walkTime", walkTime)
+        backwardDelay := IniRead(configFile, "Settings", "backwardDelay", backwardDelay)
+        
+        barLX := IniRead(configFile, "Bar", "barLX", barLX)
+        barLY := IniRead(configFile, "Bar", "barLY", barLY)
+        barRX := IniRead(configFile, "Bar", "barRX", barRX)
+        barRY := IniRead(configFile, "Bar", "barRY", barRY)
+        
+        inventoryKey := IniRead(configFile, "AutoSell", "inventoryKey", inventoryKey)
+        autoSellEnabled := IniRead(configFile, "AutoSell", "enabled", autoSellEnabled)
+        autoSellX := IniRead(configFile, "AutoSell", "autoSellX", autoSellX)
+        autoSellY := IniRead(configFile, "AutoSell", "autoSellY", autoSellY)
+        autoSellInterval := IniRead(configFile, "AutoSell", "interval", autoSellInterval)
+    }
+    catch as e {
+        MsgBox "Error loading config: " e.Message
     }
 }
 
-SaveSettings(*) {
-    global digHoldMs := digHoldEdit.Value
-    global walkMs := walkMsEdit.Value
-    global backwardDelayMs := backwardDelayEdit.Value
+SaveConfig(*) {
+    global diggingTime := diggingTimeEdit.Value
+    global walkTime := walkTimeEdit.Value
+    global backwardDelay := backwardDelayEdit.Value
     global autoSellEnabled := autoSellCheck.Value
     global autoSellInterval := autoSellIntervalEdit.Value * 60000
     
-    if SaveConfig() {
-        ShowTempToolTip("Settings saved successfully!")
-    } else {
-        ShowTempToolTip("Failed to save settings!")
-    }
-}
-
-SaveConfig() {
-    global settingsFile, digHoldMs, walkMs, backwardDelayMs, barLX, barLY, barRX, barRY
-    global inventoryKey, autoSellEnabled, autoSellX, autoSellY, autoSellInterval
-    
     try {
-        IniWrite(digHoldMs, settingsFile, "Settings", "digHoldMs")
-        IniWrite(walkMs, settingsFile, "Settings", "walkMs")
-        IniWrite(backwardDelayMs, settingsFile, "Settings", "backwardDelayMs")
-        IniWrite(barLX, settingsFile, "Bar", "barLX")
-        IniWrite(barLY, settingsFile, "Bar", "barLY")
-        IniWrite(barRX, settingsFile, "Bar", "barRX")
-        IniWrite(barRY, settingsFile, "Bar", "barRY")
-        IniWrite(inventoryKey, settingsFile, "AutoSell", "inventoryKey")
-        IniWrite(autoSellEnabled, settingsFile, "AutoSell", "enabled")
-        IniWrite(autoSellX, settingsFile, "AutoSell", "autoSellX")
-        IniWrite(autoSellY, settingsFile, "AutoSell", "autoSellY")
-        IniWrite(autoSellInterval, settingsFile, "AutoSell", "interval")
+        IniWrite(diggingTime, configFile, "Settings", "diggingTime")
+        IniWrite(walkTime, configFile, "Settings", "walkTime")
+        IniWrite(backwardDelay, configFile, "Settings", "backwardDelay")
+        IniWrite(barLX, configFile, "Bar", "barLX")
+        IniWrite(barLY, configFile, "Bar", "barLY")
+        IniWrite(barRX, configFile, "Bar", "barRX")
+        IniWrite(barRY, configFile, "Bar", "barRY")
+        IniWrite(inventoryKey, configFile, "AutoSell", "inventoryKey")
+        IniWrite(autoSellEnabled, configFile, "AutoSell", "enabled")
+        IniWrite(autoSellX, configFile, "AutoSell", "autoSellX")
+        IniWrite(autoSellY, configFile, "AutoSell", "autoSellY")
+        IniWrite(autoSellInterval, configFile, "AutoSell", "interval")
+        
+        ShowTempToolTip("Configuration saved successfully!")
         return true
     }
-    catch {
+    catch as e {
+        ShowTempToolTip("Failed to save configuration!")
         return false
     }
 }
 
 ResetDefaults(*) {
-    global digHoldEdit, walkMsEdit, backwardDelayEdit, autoSellCheck, autoSellIntervalEdit
-    global digHoldMs := 700
-    global walkMs := 2000
-    global backwardDelayMs := 1000
+    global diggingTimeEdit, walkTimeEdit, backwardDelayEdit, autoSellCheck, autoSellIntervalEdit
+    global diggingTime := 700
+    global walkTime := 1000
+    global backwardDelay := 2000
     global autoSellEnabled := false
     global autoSellInterval := 600000
     
-    digHoldEdit.Value := digHoldMs
-    walkMsEdit.Value := walkMs
-    backwardDelayEdit.Value := backwardDelayMs
+    diggingTimeEdit.Value := diggingTime
+    walkTimeEdit.Value := walkTime
+    backwardDelayEdit.Value := backwardDelay
     autoSellCheck.Value := autoSellEnabled
     autoSellIntervalEdit.Value := autoSellInterval//60000
     ShowTempToolTip("Reset to default values!")
@@ -139,11 +141,11 @@ SetAutoSellPos(x, y) {
 }
 
 ToggleMacro(*) {
-    global isMacroRunning, isPaused, macroStatus, statusText, digHoldMs, lastSellTime
+    global isMacroRunning, isPaused, macroStatus, statusText, diggingTime, lastSellTime
     
     if !isMacroRunning {
-        if digHoldMs <= 0 {
-            ShowTempToolTip("Please set dig hold time first!")
+        if diggingTime <= 0 {
+            ShowTempToolTip("Please set digging time first!")
             return
         }
         isMacroRunning := true
@@ -179,13 +181,11 @@ ToggleGUI(*) {
 PerformAutoSell() {
     global isPaused, autoSellX, autoSellY, inventoryKey, lastSellTime, fixedMouseX, fixedMouseY
     
-    ; Pause other macros
     wasPaused := isPaused
     isPaused := true
     Send("{w up}{s up}{a up}{d up}{LButton up}")
     Sleep(100)
     
-    ; Perform sell actions
     MouseMove(fixedMouseX, fixedMouseY, 0)
     Send("{" inventoryKey "}")
     Sleep(500)
@@ -194,10 +194,7 @@ PerformAutoSell() {
     Send("{" inventoryKey "}")
     Sleep(300)
     
-    ; Update last sell time
     lastSellTime := A_TickCount
-    
-    ; Restore previous state
     isPaused := wasPaused
     if (!isPaused) {
         ShowTempToolTip("Auto-Sell completed! Resuming macro...")
@@ -205,7 +202,7 @@ PerformAutoSell() {
 }
 
 RunMacro() {
-    global isMacroRunning, isPaused, digHoldMs, walkMs, backwardDelayMs
+    global isMacroRunning, isPaused, diggingTime, walkTime, backwardDelay
     global autoSellEnabled, lastSellTime, autoSellInterval, fixedMouseX, fixedMouseY
     
     while isMacroRunning {
@@ -214,10 +211,10 @@ RunMacro() {
             continue
         }
         
-        ; Dig phase with fixed mouse position
+        ; Digging phase
         while (isMacroRunning && !isPaused && !IsBarFill()) {
             MouseMove(fixedMouseX, fixedMouseY, 0)
-            DigPerfect()
+            Dig()
             if (ShouldAutoSell()) {
                 PerformAutoSell()
             }
@@ -229,10 +226,10 @@ RunMacro() {
         
         Sleep(300)
         Send("{w down}")
-        Sleep(walkMs)
+        Sleep(walkTime)
         Send("{w up}")
         
-        ; Water phase with fixed mouse position
+        ; Cleaning pan phase
         while (isMacroRunning && !isPaused && !IsBarEmpty()) {
             MouseMove(fixedMouseX, fixedMouseY, 0)
             Click("down")
@@ -247,18 +244,18 @@ RunMacro() {
             continue
         
         Sleep(2000)
-        Sleep(backwardDelayMs)
+        Sleep(backwardDelay)
         Send("{s down}")
-        Sleep(walkMs)
+        Sleep(walkTime)
         Send("{s up}")
         Sleep(300)
     }
 }
 
-DigPerfect() {
-    global digHoldMs
+Dig() {
+    global diggingTime
     Click("down")
-    Sleep(digHoldMs)
+    Sleep(diggingTime)
     Click("up")
 }
 
@@ -302,12 +299,12 @@ myGui.Add("Text", "yp", "Hotkeys: F6=Start/Pause | F7=Hide/Show GUI")
 
 ; Main Settings
 myGui.Add("Text", "xm y+10 Section", "Main Settings:")
-myGui.Add("Text", "xs y+5", "Dig Hold (ms):")
-digHoldEdit := myGui.Add("Edit", "xs y+5 w60 Number", digHoldMs)
+myGui.Add("Text", "xs y+5", "Digging Time (ms):")
+diggingTimeEdit := myGui.Add("Edit", "xs y+5 w60 Number", diggingTime)
 myGui.Add("Text", "xs y+5", "Walk Time (ms):")
-walkMsEdit := myGui.Add("Edit", "xs y+5 w60 Number", walkMs)
+walkTimeEdit := myGui.Add("Edit", "xs y+5 w60 Number", walkTime)
 myGui.Add("Text", "xs y+5", "Backward Delay (ms):")
-backwardDelayEdit := myGui.Add("Edit", "xs y+5 w60 Number", backwardDelayMs)
+backwardDelayEdit := myGui.Add("Edit", "xs y+5 w60 Number", backwardDelay)
 
 ; Bar Scanner
 myGui.Add("Text", "xm y+10 Section", "Bar Scanner:")
@@ -325,8 +322,8 @@ autoSellIntervalEdit := myGui.Add("Edit", "xs y+5 w60 Number", autoSellInterval/
 ; Control buttons
 btnToggleMacro := myGui.Add("Button", "xm y+20 w200", "Start/Pause Macro")
 btnToggleMacro.OnEvent("Click", ToggleMacro)
-btnSave := myGui.Add("Button", "xm y+5 w200", "Save Settings")
-btnSave.OnEvent("Click", SaveSettings)
+btnSave := myGui.Add("Button", "xm y+5 w200", "Save Configuration")
+btnSave.OnEvent("Click", SaveConfig)
 btnReset := myGui.Add("Button", "xm y+5 w200", "Reset Defaults")
 btnReset.OnEvent("Click", ResetDefaults)
 
@@ -335,5 +332,13 @@ F6::ToggleMacro()
 F7::ToggleGUI()
 
 ; === Start script ===
-LoadSettings()
+LoadConfig()  ; Load config before showing GUI
+
+; Update GUI controls with loaded values
+diggingTimeEdit.Value := diggingTime
+walkTimeEdit.Value := walkTime
+backwardDelayEdit.Value := backwardDelay
+autoSellCheck.Value := autoSellEnabled
+autoSellIntervalEdit.Value := autoSellInterval//60000
+
 myGui.Show()
